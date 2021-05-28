@@ -23,6 +23,9 @@ config TARGET_SIFIVE_UNLEASHED
 config TARGET_SIFIVE_UNMATCHED
 	bool "Support SiFive Unmatched Board"
 
+config TARGET_PULP_PLATFORM_OCCAMY
+	bool "Target Occamy Chiplet Architecture"
+
 config TARGET_SIPEED_MAIX
 	bool "Support Sipeed Maix Board"
 
@@ -61,6 +64,7 @@ source "board/microchip/mpfs_icicle/Kconfig"
 source "board/sifive/unleashed/Kconfig"
 source "board/sifive/unmatched/Kconfig"
 source "board/sipeed/maix/Kconfig"
+source "board/pulp-platform/occamy/Kconfig"
 
 # platform-specific options below
 source "arch/riscv/cpu/ax25/Kconfig"
