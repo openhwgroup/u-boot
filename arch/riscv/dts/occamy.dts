@@ -1,0 +1,103 @@
+/dts-v1/;
+/ {
+  #address-cells = <2>;
+  #size-cells = <2>;
+  aliases {
+      serial0 = &axi_uart0;
+      spi0 = &axi_quad_spi_1;
+  };
+  chosen {
+    stdout-path = "/soc/serial@40000000";
+  };
+  memory@80000000 {
+    device_type = "memory";
+    reg = <0x0 0x80000000 0x0 0x40000000>;
+  };
+  cpus {
+    #address-cells = <1>;
+    #size-cells = <0>;
+    timebase-frequency = <25000000>;
+    CPU0: cpu@0 {
+      device_type = "cpu";
+      status = "okay";
+      compatible = "eth,ariane", "riscv";
+      clock-frequency = <50000000>;
+      riscv,isa = "rv64fimafd";
+      mmu-type = "riscv,sv39";
+      tlb-split;
+      reg = <0>;
+      CPU0_intc: interrupt-controller {
+        #interrupt-cells = <1>;
+        interrupt-controller;
+        compatible = "riscv,cpu-intc";
+      };
+    };
+  };
+  soc: soc {
+    #address-cells = <2>;
+    #size-cells = <2>;
+    compatible = "simple-bus";
+    ranges;
+    debug@0 {
+      compatible = "riscv,debug-013";
+      interrupts-extended = <&CPU0_intc 65535>;
+      reg-names = "control";
+      reg = <0x0 0x0 0x0 0x1000>;
+    };
+    serial@2002000 {
+      compatible = "lowrisc,uart0";
+      reg = <0x0 0x2002000 0x0 0x1000>;
+      clock-frequency = <50000000>;
+      current-speed = <115200>;
+    };
+    axi_uart0: serial@40000000 {
+      clock-frequency = <50000000>;
+      compatible = "xlnx,axi-uart16550-1.01.a", "xlnx,xps-uart16550-2.00.a", "ns16550";
+      current-speed = <115200>;
+      interrupt-parent = <&PLIC0>;
+      interrupts = <1>;
+      reg = <0x0 0x40000000 0x0 0x10000>;
+      reg-offset = <0x1000>;
+      reg-shift = <2>;
+      xlnx,is-a-16550 = <0x1>;
+      xlnx,use-modem-ports = <0x0>;
+      xlnx,use-user-ports = <0x0>;
+    };
+
+    spiclk: virt_100mhz {
+      #clock-cells = <0>;
+      compatible = "fixed-clock";
+      clock-frequency = <100000000>;
+	};
+
+    axi_quad_spi_1: spi@4c000000 {
+      compatible = "xlnx,axi-quad-spi-3.2", "xlnx,xps-spi-2.00.a";
+      interrupt-parent = <&PLIC0>;
+      interrupts = <2>;
+      clocks = <&spiclk>;
+      reg = <0x0 0x4c000000 0x0 0x10000>;
+      xlnx,num-ss-bits = <1>;
+      xlnx,num-transfer-bits = <0x8>;
+      #address-cells = <1>;
+      #size-cells = <0>;
+    };
+
+    clint@4000000 {
+      clock-frequency = <25000000>;
+      compatible = "riscv,clint0";
+      interrupts-extended = <&CPU0_intc 3 &CPU0_intc 7>;
+      reg-names = "control";
+      reg = <0x0 0x4000000 0x0 0x100000>;
+    };
+    PLIC0: interrupt-controller@c000000 {
+      compatible = "riscv,plic0";
+      #address-cells = <0>;
+      #interrupt-cells = <1>;
+      interrupt-controller;
+      interrupts-extended = <&CPU0_intc 11 &CPU0_intc 9>;
+      riscv,max-priority = <6>;
+      riscv,ndev = <62>;
+      reg = <0x0 0xc000000 0x0 0x4000000>;
+    };
+  };
+};

@@ -110,10 +110,10 @@ struct xilinx_spi_priv {
 
 static int xilinx_spi_probe(struct udevice *bus)
 {
+    debug("In Xilinx Probe\n");
 	struct xilinx_spi_priv *priv = dev_get_priv(bus);
 	struct xilinx_spi_regs *regs = priv->regs;
-
-	priv->regs = (struct xilinx_spi_regs *)dev_read_addr(bus);
+    priv->regs = (struct xilinx_spi_regs *)dev_read_addr(bus);
 
 	priv->fifo_depth = dev_read_u32_default(bus, "fifo-size", 0);
 
