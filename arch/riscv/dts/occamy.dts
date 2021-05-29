@@ -78,6 +78,7 @@
       reg = <0x0 0x4c000000 0x0 0x10000>;
       xlnx,num-ss-bits = <1>;
       xlnx,num-transfer-bits = <0x8>;
+      fifo-size = <16>;
       #address-cells = <1>;
       #size-cells = <0>;
     };
