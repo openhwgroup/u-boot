@@ -21,7 +21,9 @@ static u64 notrace riscv_timer_get_count(struct udevice *dev)
 	__maybe_unused u32 hi, lo;
 
 	if (IS_ENABLED(CONFIG_64BIT))
-		return csr_read(CSR_TIME);
+		// TODO(niwis): This gives an illegal instruction on Ariane in M-Mode.
+		// return csr_read(CSR_TIME);
+		return *(u64*)(0x400bff8);
 
 	do {
 		hi = csr_read(CSR_TIMEH);
