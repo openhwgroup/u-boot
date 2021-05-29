@@ -376,9 +376,7 @@ int spi_get_bus_and_cs(int busnum, int cs, int speed, int mode,
 				__func__, ret);
 			return ret;
 		}
-		dev_dbg(bus, "In here\n");
 		plat = dev_get_parent_plat(dev);
-		dev_dbg(bus, "After parent_plat\n");
 
 		plat->cs = cs;
 		if (speed) {
@@ -396,22 +394,17 @@ int spi_get_bus_and_cs(int busnum, int cs, int speed, int mode,
 		return ret;
 	}
 
-	dev_dbg(bus, "Before device active\n");
 	if (!device_active(dev)) {
 		struct spi_slave *slave;
 
-		dev_dbg(bus, "Before probe\n");
 		ret = device_probe(dev);
-		dev_dbg(bus, "After probe\n");
 		if (ret)
 			goto err;
 		slave = dev_get_parent_priv(dev);
 		slave->dev = dev;
 	}
 
-	dev_dbg(bus, "Before parent\n");
 	slave = dev_get_parent_priv(dev);
-	dev_dbg(bus, "Before uclass_priv\n");
 	bus_data = dev_get_uclass_priv(bus);
 
         /*
