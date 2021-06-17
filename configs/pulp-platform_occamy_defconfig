@@ -28,5 +28,5 @@ CONFIG_OF_LIBFDT=y
 CONFIG_OF_BOARD_SETUP=y
 CONFIG_BOOTDELAY=5
 CONFIG_USE_BOOTCOMMAND=y
-CONFIG_BOOTCOMMAND="sf probe; sf read 82000000 0 a00000; bootm 82000000 - $(fdtcontroladdr)"
+CONFIG_BOOTCOMMAND="sf probe; fdt addr $(fdtcontroladdr); fdt set /chosen stdout-path \"/soc/serial@40000000:115200\"; sf read 82000000 0 a00000; bootm 82000000 - $(fdtcontroladdr)"
 CONFIG_DISPLAY_CPUINFO=y
