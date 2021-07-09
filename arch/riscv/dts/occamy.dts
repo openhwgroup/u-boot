@@ -2,12 +2,13 @@
 / {
   #address-cells = <2>;
   #size-cells = <2>;
-  aliases {
-      serial0 = &axi_uart0;
-      spi0 = &axi_quad_spi_1;
+  compatible = "eth,occamy-dev";
+  model = "eth,occamy";
+  config {
+    u-boot,spl-payload-offset = <0x6000000>;
   };
   chosen {
-    stdout-path = "/soc/serial@40000000";
+    stdout-path = "/soc/serial@40000000:115200";
   };
   memory@80000000 {
     device_type = "memory";
@@ -57,19 +58,17 @@
       interrupt-parent = <&PLIC0>;
       interrupts = <1>;
       reg = <0x0 0x40000000 0x0 0x10000>;
-      reg-offset = <0x1000>;
+      reg-offset = <0>;
       reg-shift = <2>;
       xlnx,is-a-16550 = <0x1>;
       xlnx,use-modem-ports = <0x0>;
       xlnx,use-user-ports = <0x0>;
     };
-
     spiclk: virt_100mhz {
       #clock-cells = <0>;
       compatible = "fixed-clock";
       clock-frequency = <100000000>;
-	};
-
+    };
     axi_quad_spi_1: spi@4c000000 {
       compatible = "xlnx,axi-quad-spi-3.2", "xlnx,xps-spi-2.00.a";
       interrupt-parent = <&PLIC0>;
@@ -81,8 +80,36 @@
       fifo-size = <16>;
       #address-cells = <1>;
       #size-cells = <0>;
+      nor@0 {
+        #address-cells = <0x1>;
+        #size-cells = <0x1>;
+        compatible = "micron,m25p80";
+        reg = <0x0 0x0>;
+        spi-max-frequency = <25000000>;
+        spi-rx-bus-width = <0x4>;
+        spi-tx-bus-width = <0x4>;
+        m25p,fast-read;
+        partition@0 {
+          label = "bitstream";
+          reg = <0x0 0x6000000>; // 96 MB
+          read-only;
+        };
+        partition@6000000 {
+          label = "u-boot";
+          reg = <0x6000000 0x100000>; // 1 MB
+          read-only;
+        };
+        uimage@6100000 {
+          label = "uimage";
+          reg = <0x6100000 0x1000000>; // 16 MB
+          read-only;
+        };
+        partition@7100000 {
+          label = "filesystem";
+          reg = <0x7100000 0x8f00000>; // 143 MB
+        };
+      };
     };
-
     clint@4000000 {
       clock-frequency = <25000000>;
       compatible = "riscv,clint0";
