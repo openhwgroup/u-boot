@@ -14,10 +14,6 @@
 
 int spl_board_init_f(void)
 {
-	/* disable AXI isolation */
-	SOC_CTRL(ISOLATE_0) = 0;
-	SOC_CTRL(ISOLATE_1) = 0;
-
 	return 0;
 }
 
