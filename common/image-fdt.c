@@ -203,6 +203,13 @@ int boot_relocate_fdt(struct lmb *lmb, char **of_flat_tree, ulong *of_size)
 		    (void *)(ulong) lmb_alloc_base(lmb, of_len, 0x1000,
 						   env_get_bootm_mapsize()
 						   + env_get_bootm_low());
+		/*
+		 * lmb_alloc_base returns and address that collides with the .bss section. How are we
+		 * supposed to handle this? By adding an lmb->reserved region? How do other boards deal with
+		 * this? How is this even possible???
+		 * Use this hacky workaround for now.
+		 */
+		of_start = (void *)(ulong) 0xbf800000;
 	}
 
 	if (of_start == NULL) {
