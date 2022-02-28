@@ -117,6 +117,13 @@
       //   //interrupt-parent = <&PLIC0>;
       // };
     };
+    mdio {
+		#address-cells = <1>;
+		#size-cells = <0>;
+        ethernet_phy: ethernet-phy@0 { /* Realtek RTL8211E-VL */
+            reg = <0>;
+        };
+    };
     eth: lowrisc-eth@30000000 {
       compatible = "lowrisc-eth";
       device_type = "network";
@@ -124,6 +131,7 @@
       interrupts = <3 0>;
       local-mac-address = [00 18 3e 02 e3 7f]; // This needs to change if more than one GenesysII on a VLAN
       reg = <0x0 0x30000000 0x0 0x8000>;
+      phy-handle = <&ethernet_phy>;
     };
     xlnx_gpio: gpio@40000000 {
       #gpio-cells = <2>;
