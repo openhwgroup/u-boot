@@ -7,6 +7,7 @@ dtb-$(CONFIG_TARGET_SIFIVE_UNLEASHED) += hifive-unleashed-a00.dtb
 dtb-$(CONFIG_TARGET_SIFIVE_UNMATCHED) += hifive-unmatched-a00.dtb
 dtb-$(CONFIG_TARGET_SIPEED_MAIX) += k210-maix-bit.dtb
 dtb-$(CONFIG_TARGET_OPENHWGROUP_CVA6_GENESYSII) += $(addsuffix .dtb, $(CONFIG_DEFAULT_DEVICE_TREE:"%"=%))
+dtb-$(CONFIG_TARGET_OPENHWGROUP_CVA6_AGILEX7) += $(addsuffix .dtb, $(CONFIG_DEFAULT_DEVICE_TREE:"%"=%))
 
 targets += $(dtb-y)
 
