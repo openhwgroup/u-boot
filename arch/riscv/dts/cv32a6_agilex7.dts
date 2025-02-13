@@ -6,7 +6,7 @@
   compatible = "eth,ariane-bare-dev";
   model = "eth,ariane-bare";
   chosen {
-    stdout-path = "/soc/jtag_uart@10000000:115200";
+    stdout-path = "/soc/uart@10000000:115200";
     //tick-timer =  "/cpus/cpu@0";
   };
   cpus {
