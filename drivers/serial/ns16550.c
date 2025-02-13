@@ -286,7 +286,7 @@ void ns16550_reinit(struct ns16550 *com_port, int baud_divisor)
 void ns16550_putc(struct ns16550 *com_port, char c)
 {
 #if AGILEX7
-	while ((serial_in(&com_port->msr) ) <8);
+	while (((serial_in(&com_port->spr) << 8) + (serial_in(&com_port->msr))) <8);
 #else
 	while ((serial_in(&com_port->lsr) & UART_LSR_THRE) == 0);
 #endif
@@ -307,7 +307,7 @@ void ns16550_putc(struct ns16550 *com_port, char c)
 char ns16550_getc(struct ns16550 *com_port)
 {
 #if AGILEX7
-	while ((serial_in(&com_port->thr) & 0x8) == 0) {
+	while ((serial_in(&com_port->rbr)) == 0) {
 #else
 	while ((serial_in(&com_port->lsr) & UART_LSR_DR) == 0) {
 #endif
