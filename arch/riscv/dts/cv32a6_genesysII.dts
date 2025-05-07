@@ -34,6 +34,16 @@
     device_type = "memory";
     reg = <0x0 0x80000000 0x0 0x40000000>;
   };
+  reserved-memory {
+    #address-cells = <2>;
+    #size-cells = <2>;
+    ranges;
+
+    opensbi@80000000 {
+      reg = <0x0 0x80000000 0x0 0x400000>;
+      no-map;
+    };
+  };
   leds {
     compatible = "gpio-leds";
     heartbeat-led {
