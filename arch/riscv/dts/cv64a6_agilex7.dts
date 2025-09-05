@@ -78,5 +78,14 @@
       interrupt-parent = <&PLIC0>;
       reg-names = "control";
     };
+    mmc: dwmmc0@ff808000 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			compatible = "snps,dw-mshc";
+			reg = <0x0 0xff808000 0x0 0x1000>;
+			fifo-depth = <0x400>;
+      fifo-mode = <1>;
+			status = "okay";
+		};
   };
 };
