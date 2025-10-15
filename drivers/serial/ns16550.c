@@ -285,8 +285,12 @@ void ns16550_reinit(struct ns16550 *com_port, int baud_divisor)
 
 void ns16550_putc(struct ns16550 *com_port, char c)
 {
-	while ((serial_in(&com_port->lsr) & UART_LSR_THRE) == 0)
-		;
+#if AGILEX7
+	while (((serial_in(&com_port->spr) << 8) + (serial_in(&com_port->msr))) <8);
+#else
+	while ((serial_in(&com_port->lsr) & UART_LSR_THRE) == 0);
+#endif
+
 	serial_out(c, &com_port->thr);
 
 	/*
@@ -302,7 +306,11 @@ void ns16550_putc(struct ns16550 *com_port, char c)
 #ifndef CONFIG_NS16550_MIN_FUNCTIONS
 char ns16550_getc(struct ns16550 *com_port)
 {
+#if AGILEX7
+	while ((serial_in(&com_port->rbr)) == 0) {
+#else
 	while ((serial_in(&com_port->lsr) & UART_LSR_DR) == 0) {
+#endif
 #if !defined(CONFIG_SPL_BUILD) && defined(CONFIG_USB_TTY)
 		extern void usbtty_poll(void);
 		usbtty_poll();
@@ -521,9 +529,15 @@ int ns16550_serial_probe(struct udevice *dev)
 		reset_deassert_bulk(&reset_bulk);
 
 	com_port->plat = dev_get_plat(dev);
-	ns16550_init(com_port, -1);
 
-	return 0;
+#if AGILEX7
+		//no init needed in agilex
+		return 0;
+#else
+		ns16550_init(com_port, -1);
+		return 0;
+#endif
+	
 }
 
 #if CONFIG_IS_ENABLED(OF_CONTROL)

@@ -144,9 +144,12 @@ static int snps_dwmmc_probe(struct udevice *dev)
 	memcpy(&snps_dwmci_dm_ops, &dm_dwmci_ops, sizeof(struct dm_mmc_ops));
 	snps_dwmci_dm_ops.get_cd = snps_dwmmc_getcd;
 
+	//AGILEX7 DOES THIS CONFIGURATION IN HPS, NOT IN CVA6
+#if !AGILEX7
 	ret = snps_dwmmc_clk_setup(dev);
 	if (ret)
 		return ret;
+#endif
 
 	if (!priv->f_max)
 		clock_max = host->bus_hz;
@@ -165,7 +168,11 @@ static int snps_dwmmc_probe(struct udevice *dev)
 	upriv->mmc = host->mmc;
 	host->mmc->dev = dev;
 
+#if AGILEX7
+	return 0; //AGILEX7 INITIALIZES THE SD CARD IN HPS, CVA6 DOES NOT NEED TO DO IT AGAIN
+#else
 	return dwmci_probe(dev);
+#endif
 }
 
 static int snps_dwmmc_bind(struct udevice *dev)
